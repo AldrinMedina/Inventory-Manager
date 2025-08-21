@@ -237,7 +237,7 @@ export default function ProductsGrid() {
                 <h3 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-1">
                   {product.product_name}
                 </h3>
-                <p className=" inline-block text-sm text-gray-600 mb-3 line-clamp-3 leading-relaxed">
+                <p className=" text-sm text-gray-600 mb-3 line-clamp-3 leading-relaxed truncate">
                   {product.description}
                 </p>
               </div>
