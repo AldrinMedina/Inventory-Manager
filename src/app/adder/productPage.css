@@ -1,0 +1,35 @@
+body {
+	display: flex; 
+	justify-content: center; 
+	align-items: center; 
+	height: 100vh; 
+	margin: 0;
+}
+.editor-container {
+  display: flex;
+  align-items: stretch; 
+  height: 80%;
+  gap: 20px;
+}
+.product-adder {
+background-color: white;
+color: black;
+flex:1;
+padding:10px;
+}
+.product-list {
+background-color: white;
+color: black;
+flex:1;
+padding:10px;
+overflow: scroll;
+}
+.product-div {
+border-width: 2px;
+cursor: pointer;
+        border-color: black;
+        border-style: solid;
+        padding:5px;
+        margin-top: 5px;
+         margin-bottom: 5px;
+}
