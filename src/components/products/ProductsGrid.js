@@ -269,7 +269,7 @@ export default function ProductsTable() {
                 onClick={() => setIsBulkDeleteModalOpen(true)}
                 className="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1.5 rounded-md transition-colors duration-200"
               >
-                <Trash className="w-5 h-5"></Trash> Delete Selected
+                Delete Selected
               </button>
               <button
                 onClick={() => {
