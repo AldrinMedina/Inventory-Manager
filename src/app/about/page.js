@@ -1,8 +1,9 @@
 import styles from "./about.css";
+import FooterNav from "@/components/ui/FooterNav";
 
 export default function About() {
   return (
-    <div className="container">
+    <div className="">
       <section className="hero">
         <h1 className="title">About Us</h1>
         <p className="subtitle">
@@ -49,6 +50,8 @@ export default function About() {
           a positive culture that encourages growth, creativity, and open communication.
         </p>
       </section>
+
+      <FooterNav />
     </div>
   );
 }
