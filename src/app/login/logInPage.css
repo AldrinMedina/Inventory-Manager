@@ -1,0 +1,40 @@
+body {
+background-color: black;
+display: flex; 
+	justify-content: center; 
+	align-items: center; 
+	height: 100vh; 
+	margin: 0;
+}
+
+.logInForm {
+background-color: white;
+color: black;
+padding: 20px;
+border-radius: 4px;
+text-align: center;
+  justify-content: center;
+  align-items: center;
+  height: 60%;
+  flex-direction: column;
+}
+
+input {
+padding: 10px;
+
+color: black;
+  border: 2px solid red;
+  border-radius: 4px;
+  width: 80%;
+}
+::placeholder { 
+color: black;
+}
+button {
+cursor: pointer;
+
+width: 80%;
+  border: 2px solid red;
+  border-radius: 4px;
+  padding: 10px;
+}
