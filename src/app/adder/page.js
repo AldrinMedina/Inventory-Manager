@@ -18,7 +18,6 @@ const [isLoading, setIsLoading] = useState(true);
 const [isDeleteProductModalOpen, setIsDeleteProductModalOpen] = useState(false);
 const [isUpdateProductModalOpen, setIsUpdateProductModalOpen] = useState(false);
 
-  // Form and selection state
   const [formData, setFormData] = useState(initialFormState());
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -102,7 +101,7 @@ const [isUpdateProductModalOpen, setIsUpdateProductModalOpen] = useState(false);
 
   const openDeleteModal = (product) => {
     setSelectedProduct(product);
-    setIsUpdateProductModalOpen(false); // Close the update modal first
+    setIsUpdateProductModalOpen(false); 
     setIsDeleteProductModalOpen(true);
   };
 
@@ -166,7 +165,7 @@ const [isUpdateProductModalOpen, setIsUpdateProductModalOpen] = useState(false);
     },
   ];
 
-  // JSX for the add product form
+
   const addProductForm = (
     <div className="space-y-4">
       {fields.map(({ label, name, type, placeholder }) => (
