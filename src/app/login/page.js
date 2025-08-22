@@ -21,7 +21,7 @@ const confirm =  () => {
 	else if (passVal === "5678") {
 				    localStorage.setItem('username', emailVal);
 
-		window.open ("./product");
+		window.open ("./products");
 		}
 		else {
 			alert ("no");
