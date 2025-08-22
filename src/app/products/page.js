@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import {
+  createProduct,
+  deleteProduct,
   fetchProducts,
+  updateProduct,
 } from "@/lib/api/products";
 import CustomHeader from "@/components/ui/CustomHeader";
 import CustomModal from "@/components/ui/CustomModal";
@@ -10,17 +13,13 @@ import './productPage.css';
 
 
 export default function ProductsGrid() {
-  // ========================
-  // Component State
-  // ========================
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
  const [cartItems, setCartItems] = useState([]);
-  const [isCartModalOpen, setIsCartModalOpen] = useState(false);
-  // Modal states
-  const [isProductModalFormOpen, setIsProductModalFormOpen] = useState(false);
+
 
   // Form and selection state
   const [formData, setFormData] = useState(initialFormState());
@@ -94,7 +93,22 @@ export default function ProductsGrid() {
     loadProducts();
   }, []);
 
+useEffect(() => {
+    // Check if window (browser environment) is defined to avoid SSR errors.
+    if (typeof window !== "undefined") {
+      const storedCartItems = localStorage.getItem("cartItems");
+      if (storedCartItems) {
+        setCartItems(JSON.parse(storedCartItems));
+      }
+    }
+  }, []); // The empty dependency array ensures this runs only once on mount.
 
+  // Effect to save cart items to localStorage whenever the state changes.
+  useEffect(() => {
+    if (cartItems.length > 0 || localStorage.getItem("cartItems")) {
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    }
+  }, [cartItems]);
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -105,23 +119,21 @@ export default function ProductsGrid() {
       </div>
     );
   }
-const handleAddToCart = (product) => {
-    const existingItem = cartItems.find((item) => item.id === product.id);
-
-    if (existingItem) {
-      // If item exists, update its quantity
-      const updatedCart = cartItems.map((item) =>
-        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-      );
-      setCartItems(updatedCart);
-    } else {
-      // If not, add the new item with a quantity of 1
-      setCartItems([...cartItems, { ...product, quantity: 1 }]);
-    }
+const addToCart = (product) => {
+    setCartItems(prevItems => {
+      const isItemInCart = prevItems.find(item => item.id === product.id);
+      if (isItemInCart) {
+        return prevItems.map(item =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prevItems, { ...product, quantity: 1 }];
+    });
   };
 
-  const handleRemoveFromCart = (productId) => {
-    setCartItems(cartItems.filter((item) => item.id !== productId));
+
+const removeFromCart = (productId) => {
+    setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
   };
 
   const handleUpdateQuantity = (productId, newQuantity) => {
@@ -153,7 +165,7 @@ const handleAddToCart = (product) => {
   secondaryButton={{
     isVisible: true,
     label: `Cart (${cartItems.length})`,
-    onClick: () => setIsCartModalOpen(true),
+    onClick: () => setIsCartOpen(true), //console.log(cartItems) 
   }}
 />
       </div>
@@ -209,11 +221,10 @@ const handleAddToCart = (product) => {
               </div>
                <div className="mt-4">
     <button
-      onClick={() => handleAddToCart(product)}
-      className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200"
-    >
-      Add to Cart
-    </button>
+                onClick={() => addToCart(product)}
+  className="bg-green-500 text-black py-2 px-4 rounded-md hover:bg-green-600 transition-colors duration-200"              >
+                Add to Cart
+              </button>
   </div>
            
             </div>
@@ -233,66 +244,44 @@ const handleAddToCart = (product) => {
           </div>
         </div>
       )}
-<CustomModal
-  isOpen={isCartModalOpen}
-  onClose={() => setIsCartModalOpen(false)}
-  title="Your Cart"
->
-  {cartItems.length === 0 ? (
-    <p className="text-gray-900">Your cart is empty.</p>
-  ) : (
-    <>
-      <ul className="divide-y divide-gray-200">
-        {cartItems.map((item) => (
-          <li key={item.id} className="py-4 flex items-center justify-between">
-            <div className="flex-1">
-              <h4 className="text-sm font-semibold text-gray-900">{item.product_name}</h4>
-              <p className="text-gray-500 text-xs">${item.price}</p>
-            </div>
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full font-bold"
-              >
-                -
-              </button>
-              <span className="text-gray-900 min-w-[20px] text-center">{item.quantity}</span>
-              <button
-                onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full font-bold"
-              >
-                +
-              </button>
-              <button
-                onClick={() => handleRemoveFromCart(item.id)}
-                className="text-red-500 hover:text-red-700 ml-2 p-1"
-                title="Remove item"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 112 0v6a1 1 0 11-2 0V8z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+ {isCartOpen && (
+        <div className="fixed top-20 right-4 w-80 bg-white p-4 rounded-lg shadow-lg z-50 border border-gray-200">
+          <div className="cart-content">
+            <div className="flex justify-between items-center mb-4">
+<h2 className="text-2xl font-bold text-black">Your Shopping Cart</h2>
+              <button onClick={() => setIsCartOpen(false)} className="text-gray-500 hover:text-gray-800">
+                &times;
               </button>
             </div>
-          </li>
-        ))}
-      </ul>
-      <div className="mt-6 pt-4 border-t border-gray-200 text-right">
-        <h3 className="text-lg font-bold text-gray-900">
-          Total: ${calculateTotalPrice().toFixed(2)}
-        </h3>
-      </div>
-    </>
-  )}
-</CustomModal>
+            {cartItems.length === 0 ? (
+              <p>Your cart is empty.</p>
+            ) : (
+              <div>
+                {cartItems.map(item => (
+                  <div key={item.id} className="flex items-center justify-between p-2 mb-2 border-b">
+                    <div className="flex items-center">
+                      <img src={item.img_url} alt={item.product_name} className="w-12 h-12 object-cover rounded-md mr-2" />
+                      <div>
+                        <h4 className="font-semibold text-black">{item.product_name}</h4>
+                        <p className="text-sm text-gray-600">${item.price} x {item.quantity}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => removeFromCart(item.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+               <div className="mt-4 pt-4 border-t-2 font-bold text-lg text-right text-black">
+  Total: ${cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}
+</div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
