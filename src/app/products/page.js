@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from "react";
 import {
-  createProduct,
-  deleteProduct,
   fetchProducts,
-  updateProduct,
 } from "@/lib/api/products";
 import CustomHeader from "@/components/ui/CustomHeader";
 import CustomModal from "@/components/ui/CustomModal";

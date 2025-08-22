@@ -112,10 +112,10 @@ export default function GroceryLandingPage() {
               <a href="#deals" className="text-gray-700 hover:text-green-600 transition-colors">Deals</a>
               <a href="#products" className="text-gray-700 hover:text-green-600 transition-colors">Products</a>
               <a href="#about" className="text-gray-700 hover:text-green-600 transition-colors">About</a>
-              <button className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition-colors flex items-center space-x-2">
+              <a href="/products" className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition-colors flex items-center space-x-2">
                 <ShoppingCart className="w-4 h-4" />
                 <span>Shop Now</span>
-              </button>
+              </a>
             </div>
 
             {/* Mobile Menu Button */}
